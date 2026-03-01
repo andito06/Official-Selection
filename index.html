@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Selection – Us</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Georgia', serif;
+  background:black;
+  color:white;
+  overflow:hidden;
+}
+
+/* CINEMATIC BARS */
+body::before,
+body::after{
+  content:"";
+  position:fixed;
+  left:0;
+  width:100%;
+  height:60px;
+  background:black;
+  z-index:999;
+}
+body::before{ top:0; }
+body::after{ bottom:0; }
+
+/* FILM GRAIN */
+#grain{
+  pointer-events:none;
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity:0.08;
+  z-index:998;
+}
+
+/* START */
+#startScreen{
+  position:fixed;
+  width:100%;
+  height:100vh;
+  background:black;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:1000;
+}
+#startBtn{
+  margin-top:30px;
+  padding:14px 30px;
+  border:none;
+  border-radius:30px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+  transition:0.3s;
+}
+#startBtn:hover{ transform:scale(1.05); }
+
+/* INTRO */
+#intro{
+  display:none;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:30px;
+}
+.intro-text{
+  opacity:0;
+  transition:opacity 2s ease;
+  font-size:20px;
+}
+
+/* PASSWORD */
+#passwordPage{
+  display:none;
+  height:100vh;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  text-align:center;
+}
+input{
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-top:15px;
+  text-align:center;
+}
+button{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ff4d6d;
+  color:white;
+  cursor:pointer;
+}
+
+/* SECRET */
+#secret{
+  display:none;
+  min-height:100vh;
+  background:linear-gradient(180deg,#000,#140014,#2a001a);
+  padding:100px 20px;
+  overflow-y:auto;
+}
+
+.scene{
+  max-width:700px;
+  margin:150px auto;
+  text-align:center;
+  opacity:0;
+  transform:translateY(60px);
+  transition:all 1.5s ease;
+}
+.scene.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* VIDEO EFFECT */
+video{
+  width:100%;
+  border-radius:20px;
+  margin-top:20px;
+  transform:scale(0.9);
+  transition:transform 2s ease, filter 1s ease;
+}
+.scene.show video{
+  transform:scale(1);
+}
+
+.ending{
+  font-size:22px;
+  margin-top:200px;
+  opacity:0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div id="grain"></div>
+
+<!-- START -->
+<div id="startScreen">
+  <p>Put on your headphones.</p>
+  <button id="startBtn" onclick="startFilm()">Start</button>
+</div>
+
+<!-- INTRO -->
+<div id="intro">
+  <div class="intro-text" id="introText"></div>
+</div>
+
+<!-- PASSWORD -->
+<div id="passwordPage">
+  <h3>Masukkan tanggal dimana semuanya mulai terasa berbeda</h3>
+  <input type="password" id="passwordInput" placeholder="angka saja">
+  <button onclick="checkPassword()">Masuk</button>
+  <p id="errorMsg" style="color:#ff4d6d;"></p>
+</div>
+
+<!-- SECRET -->
+<div id="secret">
+
+<audio id="rain" src="rain.mp3"></audio>
+<audio id="music" src="experience.mp3" loop></audio>
+
+<div class="scene">
+  <h2>CHAPTER I — THE NIGHT WE STARTED</h2>
+  <p>
+    Kita nggak pernah merencanakannya.<br><br>
+    Tapi entah kenapa…<br><br>
+    kamu jadi  tempat kuu pulangg.<br><br>
+    Dan sejak hari ituu,<br>
+    dunia terasa lebih tenang.
+  </p>
+</div>
+
+<div class="scene">
+  <video controls>
+    <source src="video.mp4" type="video/mp4">
+  </video>
+</div>
+
+<div class="scene">
+  <p>
+    Kita tumbuh. Kita berubah.<br><br>
+    Kadang dekatt.<br>
+    Kadang jauhh.<br><br>
+    Tapi di antara semua kemungkinan,<br>
+    kita tetap memilih satu sama lainn.<br><br>
+    Bukan karena mudahh.<br>
+    Tapi karena berartii.
+  </p>
+</div>
+
+<div class="scene ending">
+  To be continued…<br><br>
+  <span style="font-size:14px; opacity:0.6;">
+    As long as we choose each other.
+  </span>
+</div>
+
+</div>
+
+<script>
+
+const lines=[
+"Official Selection",
+"This is not a love story.",
+"It's a story about choosing each other…",
+"over and over again."
+];
+
+let i=0;
+const introText=document.getElementById("introText");
+
+function startFilm(){
+  document.getElementById("startScreen").style.display="none";
+  document.getElementById("intro").style.display="flex";
+
+  const rain=document.getElementById("rain");
+  rain.volume=0.5;
+  rain.play();
+
+  showIntro();
+}
+
+function showIntro(){
+  if(i<lines.length){
+    introText.style.opacity=0;
+    setTimeout(()=>{
+      introText.innerText=lines[i];
+      introText.style.opacity=1;
+      i++;
+      setTimeout(showIntro,3000);
+    },1000);
+  }else{
+    setTimeout(()=>{
+      document.getElementById("intro").style.display="none";
+      document.getElementById("passwordPage").style.display="flex";
+    },2000);
+  }
+}
+
+function checkPassword(){
+  if(document.getElementById("passwordInput").value==="18092025"){
+    document.getElementById("passwordPage").style.display="none";
+    document.body.style.overflow="auto";
+    document.getElementById("secret").style.display="block";
+
+    const music=document.getElementById("music");
+    music.volume=0.5;
+    music.play();
+
+    fadeOutRain();
+    revealScenes();
+  }else{
+    document.getElementById("errorMsg").innerText="Hmm… kamu bukan dia ya?";
+  }
+}
+
+function fadeOutRain(){
+  const rain=document.getElementById("rain");
+  let fade=setInterval(()=>{
+    if(rain.volume>0.05){
+      rain.volume-=0.05;
+    }else{
+      rain.pause();
+      clearInterval(fade);
+    }
+  },300);
+}
+
+function revealScenes(){
+  const scenes=document.querySelectorAll(".scene");
+  if(scenes.length>0){
+    scenes[0].classList.add("show");
+  }
+  function checkScenes(){
+    for(let i=1;i<scenes.length;i++){
+      const top=scenes[i].getBoundingClientRect().top;
+      if(top<window.innerHeight-120){
+        scenes[i].classList.add("show");
+      }
+    }
+  }
+  window.addEventListener("scroll",checkScenes);
+}
+
+/* SMOOTH MUSIC FADE WHEN VIDEO PLAY */
+const video=document.querySelector("video");
+const music=document.getElementById("music");
+
+function fadeMusic(target,duration){
+  const step=0.02;
+  const intervalTime=duration/(Math.abs(music.volume-target)/step);
+  const fade=setInterval(()=>{
+    if(Math.abs(music.volume-target)>step){
+      if(music.volume>target){ music.volume-=step; }
+      else{ music.volume+=step; }
+    }else{
+      music.volume=target;
+      clearInterval(fade);
+    }
+  },intervalTime);
+}
+
+video.addEventListener("play",()=>{ fadeMusic(0.15,1500); });
+video.addEventListener("pause",()=>{ fadeMusic(0.5,1500); });
+video.addEventListener("ended",()=>{ fadeMusic(0.5,1500); });
+
+</script>
+
+</body>
+</html>
